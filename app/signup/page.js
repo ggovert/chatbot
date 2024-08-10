@@ -13,29 +13,46 @@ import {
 } from '@mui/material';
 import theme from '../components/theme';
 import NavBar from '../components/navbar';
-import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/app/firebase/config';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 export default function SignUpPage() {
   // --------------------------------- State management vars ----------------------
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [createUserWithEmailAndPassword] =
-    useCreateUserWithEmailAndPassword(auth);
+  const [error, setError] = useState('');
+  // const [createUserWithEmailAndPassword] =
+  //   useCreateUserWithEmailAndPassword(auth);
   const router = useRouter();
 
   // -------------------------------handle functions ----------------------
   const handleSignUp = async () => {
+    if (password.length <= 7) {
+      setError('Password must be at least 8 characters long.');
+      return;
+    }
     try {
-      const res = await createUserWithEmailAndPassword(email, password);
-      console.log({ res });
-      // successful signup, reset email and password
+      await createUserWithEmailAndPassword(auth, email, password);
+      console.log('signup successful');
       setEmail('');
       setPassword('');
-    } catch (e) {
-      console.error(e);
-      alert(e);
+      router.push('/');
+    } catch (error) {
+      let errorMessage = 'An error occurred. Please try again.';
+
+      if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Invalid email address.';
+      } else if (error.code === 'auth/weak-password') {
+        errorMessage =
+          'Password is too weak. Please choose a stronger password.';
+      } else if (error.code === 'auth/email-already-in-use') {
+        errorMessage = 'An account already exists with this email address.';
+      } else {
+        errorMessage =
+          'Failed to sign up. Please check your details and try again.';
+      }
+      setError(errorMessage);
     }
   };
 
@@ -117,6 +134,7 @@ export default function SignUpPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            {error && <Typography color="error">{error}</Typography>}
             <Button
               variant="contained"
               sx={{

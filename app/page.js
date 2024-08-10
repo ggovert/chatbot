@@ -1,6 +1,6 @@
 'use client';
 // --------------------------------- Imports ------------------------------------
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -22,14 +22,26 @@ import UserProfile from './components/avatar';
 export default function Home() {
   // --------------------------------- State Management vars -----------------------
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(true);
 
   // --------------------------------- User Auth -------------------------------
   const [user] = useAuthState(auth);
-  console.log(user);
   const router = useRouter();
 
-  if (!user) {
-    router.push('/signup');
+  console.log({ user });
+
+  useEffect(() => {
+    // Redirection logic
+    if (!user) {
+      router.push('/signup');
+    } else {
+      setLoading(false);
+    }
+  }, [user, router]);
+
+  if (loading) {
+    // testing
+    return <div>Loading...</div>;
   }
   // --------------------------------- event handler functions -------------------------------
   const sendMessage = async () => {};

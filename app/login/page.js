@@ -12,30 +12,48 @@ import {
 } from '@mui/material';
 import theme from '../components/theme';
 import NavBar from '../components/navbar';
-import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/app/firebase/config';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 export default function LoginPage() {
   // --------------------------------- State management vars ----------------------
   const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
   const [password, setPassword] = useState('');
-  const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
   const router = useRouter();
 
   // -------------------------------handle functions ----------------------
   const handleLogin = async () => {
     try {
-      const response = await signInWithEmailAndPassword(email, password);
-      console.log('Login Successful', response);
-      // successful login, reset email and password
-      setEmail('');
-      setPassword('');
+      // Attempt to sign in with email and password
+      await signInWithEmailAndPassword(auth, email, password);
+      console.log('Login Successful');
       router.push('/');
-    } catch (e) {
-      console.error(e);
-      alert(e.message);
+    } catch (error) {
+      console.error('Login error:', error);
+      // Check the error code
+      let errorMessage = 'An error occurred. Please try again.';
+      if (error.code === 'auth/user-not-found') {
+        errorMessage =
+          'No user found with this email. Please check your email or sign up.';
+      } else if (error.code === 'auth/wrong-password') {
+        errorMessage = 'Incorrect password. Please try again.';
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Invalid email format. Please check your email address.';
+      } else if (error.code === 'auth/too-many-requests') {
+        errorMessage = 'Too many requests. Please try again later.';
+      } else {
+        errorMessage =
+          'Failed to sign in. Please check your credentials and try again.';
+      }
+      console.error('Error message:', errorMessage);
+      setError(errorMessage);
     }
+  };
+
+  const handleSignUp = () => {
+    router.push('/signup');
   };
 
   // --------------------------------- UI ------------------------------------
@@ -113,6 +131,11 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            {error && (
+              <Typography color="error" mb={2}>
+                {error}
+              </Typography>
+            )}
             <Button
               variant="contained"
               sx={{
@@ -129,7 +152,7 @@ export default function LoginPage() {
             {/* option */}
             <Typography textAlign="center" mt={2}>
               Don't have an account?{' '}
-              <Link component="button" onClick={() => router.push('/signup')}>
+              <Link component="button" onClick={handleSignUp}>
                 Sign up here
               </Link>
             </Typography>

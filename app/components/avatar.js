@@ -16,7 +16,6 @@ function UserProfile() {
 
   const handleLogout = () => {
     signOut(auth);
-    // Implement your logout logic here
     alert('Logging out...');
     setAnchorEl(null);
   };
