@@ -16,14 +16,13 @@ import NavBar from '../components/navbar';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/app/firebase/config';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 
 export default function SignUpPage() {
   // --------------------------------- State management vars ----------------------
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  // const [createUserWithEmailAndPassword] =
-  //   useCreateUserWithEmailAndPassword(auth);
   const router = useRouter();
 
   // -------------------------------handle functions ----------------------
@@ -53,6 +52,18 @@ export default function SignUpPage() {
           'Failed to sign up. Please check your details and try again.';
       }
       setError(errorMessage);
+    }
+  };
+
+  const googleSignIn = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+      console.log('Google sign-in successful');
+      router.push('/');
+    } catch (error) {
+      console.error('Google sign-in error:', error);
+      setError('Failed to sign in with Google. Please try again.');
     }
   };
 
@@ -151,6 +162,7 @@ export default function SignUpPage() {
             <Typography variant="h6" align="center">
               Or
             </Typography>
+            {/* Google button */}
             <Button
               variant="outlined"
               sx={{
@@ -158,10 +170,11 @@ export default function SignUpPage() {
                 color: '#000',
                 borderColor: '#000',
               }}
+              onClick={googleSignIn}
             >
               Continue with Google
             </Button>
-            {/* option */}
+            {/* option to login instead*/}
             <Typography textAlign="center" mt={2}>
               Already have an account?{' '}
               <Link component="button" onClick={() => router.push('/login')}>
