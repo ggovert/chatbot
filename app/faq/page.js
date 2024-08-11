@@ -72,7 +72,7 @@ export default function Home() {
                 justifyContent="center"
                 alignItems="center"
                 >
-                    <Button variant="contained" >Go Back</Button>
+                    <Button onClick={() => {router.push('/');}}variant="contained" >Go Back</Button>
                 </Box>
 
                 
