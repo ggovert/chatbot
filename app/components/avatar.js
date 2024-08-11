@@ -3,7 +3,7 @@ import { Avatar, Button, Box, Typography, Menu, MenuItem } from '@mui/material';
 import { auth } from '@/app/firebase/config';
 import { signOut } from 'firebase/auth';
 
-function UserProfile() {
+function UserProfile({ userEmail }) {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
@@ -33,7 +33,7 @@ function UserProfile() {
         <Button onClick={handleClick}>
           <Avatar sx={{ bgcolor: 'primary.main', width: 50, height: 50 }} />
         </Button>
-        <Typography variant="h6">currentuser@gmail.com</Typography>
+        <Typography variant="h6">{userEmail}</Typography>
       </Box>
 
       {/* Menu for logout */}

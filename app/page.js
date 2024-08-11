@@ -21,15 +21,14 @@ import UserProfile from './components/avatar';
 
 export default function Home() {
   // --------------------------------- State Management vars -----------------------
-  const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [chatHistory, setChatHistory] = useState([]);
+  const [message, setMessage] = useState(''); //user
 
   // --------------------------------- User Auth -------------------------------
   const [user] = useAuthState(auth);
   const router = useRouter();
-
-  console.log({ user });
-
   useEffect(() => {
     // Redirection logic
     if (!user) {
@@ -38,18 +37,42 @@ export default function Home() {
       setLoading(false);
     }
   }, [user, router]);
-
   if (loading) {
     // testing
     return <div>Loading...</div>;
   }
   // --------------------------------- event handler functions -------------------------------
-  const sendMessage = async () => {};
-  return (
-    // --------------------------------- UI ------------------------------------
+  const sendMessage = async () => {
+    if (message.trim() === '') return;
 
+    const newChatHistory = [
+      ...chatHistory,
+      { role: 'user', parts: [{ text: message }] },
+    ];
+    setChatHistory(newChatHistory);
+    setMessage('');
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newChatHistory),
+      });
+
+      const data = await response.json();
+      setChatHistory([
+        ...newChatHistory,
+        { role: 'model', parts: [{ text: data.text }] },
+      ]);
+    } catch (error) {
+      console.error('Error:', error);
+      setError('Failed to send message');
+    }
+  };
+
+  return (
     <ThemeProvider theme={theme}>
-      {/* bg */}
+      {/* background */}
       <Box
         width="100wh"
         height="100vh"
@@ -71,13 +94,16 @@ export default function Home() {
         >
           <Stack margin="20px">
             {/* avatar/profile */}
-            <UserProfile></UserProfile>
+            <UserProfile userEmail={user?.email} />
 
             {/* previous chats */}
             <Box>
               {/* Will have to create a sort of loop here to retrieve all chats from db */}
               <List>
                 {/* will need to manage the button here so that when the user clicks, it displays the chat in the chat window */}
+                <Typography variant="h5" textAlign="center" marginBottom="15px">
+                  🚧 Coming soon 🚧
+                </Typography>
                 <ListItemButton
                   sx={{
                     borderRadius: '8px',
@@ -85,7 +111,7 @@ export default function Home() {
                       `1px solid ${theme.palette.primary.border}`,
                   }}
                 >
-                  <ListItemText primary="I only have 2 eggs, give me recommendation" />
+                  <ListItemText primary="Previous chats will be displayed in this sidebar in case you want to return to them later 📥" />
                 </ListItemButton>
               </List>
             </Box>
@@ -122,22 +148,62 @@ export default function Home() {
               alignItems="center"
               padding="20px"
             >
-              {/* Will need to add the messages from the server here > see Tuto 14:40*/}
-              {/*Will need a condition here to render the avatar depending on the user , same for the colors of the message box > Tuto*/}
               <Avatar
-                sx={{ bgcolor: 'primary.main', width: 50, height: 50 }}
+                sx={{
+                  bgcolor: 'primary.main',
+                  width: 50,
+                  height: 50,
+                }}
                 src="logo.png"
-              ></Avatar>
+              />
               <Typography
-                bgcolor="primary.main"
-                borderRadius="12px"
-                padding="20px"
+                sx={{
+                  bgcolor: 'primary.main',
+                  borderRadius: '12px',
+                  padding: '20px',
+                }}
               >
-                {/* Will need to replace this with the model content  */}
-                Hello! I'm LittleChef 🧑‍🍳. Tell me what you got in your fridge
-                and will make something delicous and healthy?
+                Hi there! I'm LittleChef, your friendly AI assistant who's here
+                to help you turn your fridge into a feast! I'm full of delicious
+                recipes, healthy food tips, and helpful advice to make cooking
+                and eating fun and easy. What can I help you with today? 😊
               </Typography>
             </Stack>
+
+            {chatHistory.map((message, index) => (
+              <Stack
+                key={index}
+                direction="row"
+                spacing={3}
+                flexDirection="row"
+                alignItems="center"
+                padding="20px"
+                justifyContent={
+                  message.role === 'model' ? 'flex-start' : 'flex-end'
+                }
+              >
+                <Avatar
+                  sx={{
+                    bgcolor: 'primary.main',
+                    width: 50,
+                    height: 50,
+                  }}
+                  src={message.role === 'model' ? 'logo.png' : ''}
+                />
+                <Typography
+                  sx={{
+                    bgcolor:
+                      message.role === 'model'
+                        ? 'primary.main'
+                        : 'primary.userChat',
+                    borderRadius: '12px',
+                    padding: '20px',
+                  }}
+                >
+                  {message.parts[0].text}
+                </Typography>
+              </Stack>
+            ))}
           </Box>
 
           {/* chat input space */}
@@ -156,10 +222,12 @@ export default function Home() {
               width="80%"
               variant="standard"
               fullWidth
-              placeholder="Let's chat"
+              placeholder="Let's make something yummy...."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
             />
+            {/* display error message */}
+            {error && <Typography color="error">{error}</Typography>}
             <Button
               variant="contained"
               disableElevation="true"
