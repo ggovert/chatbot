@@ -163,10 +163,10 @@ export default function Home() {
                   padding: '20px',
                 }}
               >
-                Hi there! I'm LittleChef, your friendly AI assistant who's here
+                {` Hi there! I'm LittleChef, your friendly AI assistant who's here
                 to help you turn your fridge into a feast! I'm full of delicious
                 recipes, healthy food tips, and helpful advice to make cooking
-                and eating fun and easy. What can I help you with today? 😊
+                and eating fun and easy. What can I help you with today? 😊`}
               </Typography>
             </Stack>
 
