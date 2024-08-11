@@ -8,7 +8,7 @@ const theme = createTheme({
     primary: {
       main: '#fabc30',
       sidebar: '#f2e5c8',
-      darker: '#e3e2cf',
+      userChat: '#ffffffca',
       border: '#000',
       insideForm: '#eee',
     },
