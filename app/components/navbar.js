@@ -5,9 +5,11 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
+import { useRouter } from 'next/navigation';
 // import MenuIcon from '@mui/icons-material/Menu';
 
 export default function NavBar() {
+  const router = useRouter()
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -24,7 +26,7 @@ export default function NavBar() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             ChatLittleChef
           </Typography>
-          <Button color="inherit">FAQ</Button>
+          <Button color="inherit" onClick={() => router.push('/faq')}>FAQ</Button>
           <Button color="inherit">Support</Button>
         </Toolbar>
       </AppBar>
