@@ -8,14 +8,17 @@ import IconButton from '@mui/material/IconButton';
 import { useRouter } from 'next/navigation';
 
 export default function NavBar() {
-  // -------------------------------handle functions ----------------------
   const router = useRouter();
-  const handleSuppot = async () => {
+
+  // -------------------------------handle functions ----------------------
+  const handleSupport = async () => {
     router.push('/support');
   };
+
   const home = async () => {
     router.push('/signup');
   };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -26,13 +29,17 @@ export default function NavBar() {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
-          ></IconButton>
+          >
+           
+            {/* <MenuIcon /> */}
+          </IconButton>
 
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             ChatLittleChef
           </Typography>
-          <Button color="inherit">FAQ</Button>
-          <Button color="inherit" onClick={handleSuppot}>
+
+          <Button color="inherit" onClick={() => router.push('/faq')}>FAQ</Button>
+          <Button color="inherit" onClick={handleSupport}>
             Support
           </Button>
         </Toolbar>
