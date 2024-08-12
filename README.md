@@ -24,4 +24,5 @@ Chat: Users can interact with the AI by typing messages in the chat input field.
 Profile Sidebar: Displays user profile information and a placeholder for future chat history features. 
 
 ## What to expect 
-[ Demo coming soon ] 
+Demo: https://www.youtube.com/watch?v=0D2ZaPuvvjE
+Website: https://chatbot-deployment-dusky.vercel.app/signup
