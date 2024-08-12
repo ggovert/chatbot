@@ -1,7 +1,7 @@
 # LittleChef AI Assistant
-
-![Bright_Colorful_Playful_Funny_Donuts_Food_Circle_Logo-removebg-preview](https://github.com/user-attachments/assets/91bdcc19-9ba9-4a31-aa57-602a71540d0a)
-
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/91bdcc19-9ba9-4a31-aa57-602a71540d0a" alt="Bright Colorful Playful Funny Donuts Food Circle Logo">
+</p>
 
 ## Overview
 LittleChef is an AI-powered chat application designed to help users turn their fridge into a feast! It offers personalized recipes, healthy food recommendations, and guidance on balanced nutrition based on the ingredients users have available. The application utilizes Google's Gemini AI for generating responses and providing culinary advice.
